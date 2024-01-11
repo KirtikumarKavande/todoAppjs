@@ -1,7 +1,25 @@
 const addTodoToList = document.getElementById("todo-data");
+const searchBar = document.getElementById("todo-input-bar");
+const saveTodoButton = document.getElementById("save-todo");
+
+searchBar.addEventListener("keyup", () => {
+  if (!searchBar.value) {
+    saveTodoButton.classList.add("disabled");
+  } else {
+    saveTodoButton.classList.remove("disabled");
+  }
+});
+
+saveTodoButton.addEventListener('click',()=>{
+  if(searchBar.value){
+    addToDo(searchBar.value)
+    searchBar.value=""
+  }
+})
+
 
 function addToDo(todo) {
-    //creating div element
+  //creating div element
   const addRow = document.createElement("div");
   const addItemList = document.createElement("div");
 
@@ -14,14 +32,24 @@ function addToDo(todo) {
   const createhr = document.createElement("hr");
 
   //adding style
-  addItemList.classList.add("todo-item" ,"d-flex" ,"flex-row", "justify-content-between", "align-items-center")
-  srNo.classList.add('todo-no')
-  taskTodo.classList.add("todo-detail", "text-muted")
-  status.classList.add("todo-status", "text-muted")
-  toDoButtonGroup.classList.add("todo-actions","d-flex", "justify-content-start", "gap-2")
-  finishedButton.classList.add("btn", "btn-success")
-  deleteButton.classList.add("btn", "btn-danger")
-  
+  addItemList.classList.add(
+    "todo-item",
+    "d-flex",
+    "flex-row",
+    "justify-content-between",
+    "align-items-center"
+  );
+  srNo.classList.add("todo-no");
+  taskTodo.classList.add("todo-detail", "text-muted");
+  status.classList.add("todo-status", "text-muted");
+  toDoButtonGroup.classList.add(
+    "todo-actions",
+    "d-flex",
+    "justify-content-start",
+    "gap-2"
+  );
+  finishedButton.classList.add("btn", "btn-success");
+  deleteButton.classList.add("btn", "btn-danger");
 
   // adding content to that div
   deleteButton.textContent = "Delete";
