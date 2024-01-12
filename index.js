@@ -41,22 +41,30 @@ function finishedTodo(e) {
 
   const indexOfData = targetElement.getAttribute("idbtn");
 
-  if(allTodoItems[+indexOfData-1].status==="completed"){
-    allTodoItems[+indexOfData-1].status="In Progress"
-  }else{
-    allTodoItems[+indexOfData-1].status="completed"
+  if (allTodoItems[+indexOfData - 1].status === "completed") {
+    allTodoItems[+indexOfData - 1].status = "In Progress";
+    allTodoItems[+indexOfData - 1].buttonText = "finished";
 
+  } else {
+    allTodoItems[+indexOfData - 1].status = "completed";
+    allTodoItems[+indexOfData - 1].buttonText = "Undo";
   }
-  console.log("allTodoItems2",allTodoItems)
+  console.log("allTodoItems2", allTodoItems);
   addTodoToList.innerHTML = "";
+  allTodoItems.sort((a, b) => {
+    if (a.status === "completed") {
+      return 1;
+    }
 
+    return -1;
+  })
   allTodoItems.forEach((item, index) => {
     addToDo(item, index + 1);
   });
-
 }
 
 function addToDo(todo, toDoCount) {
+ ;
   //creating div element
   const addRow = document.createElement("div");
   const addItemList = document.createElement("div");
@@ -95,12 +103,10 @@ function addToDo(todo, toDoCount) {
   // adding content to that div
   deleteButton.textContent = "Delete";
 
-  if(todo.status==="completed"){
+  if (todo.status === "completed") {
     finishedButton.textContent = "Undo";
-
-  }else{
+  } else {
     finishedButton.textContent = "Finish";
-
   }
   srNo.textContent = toDoCount;
   taskTodo.textContent = todo.content;
