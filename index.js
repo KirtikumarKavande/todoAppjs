@@ -1,6 +1,7 @@
 const addTodoToList = document.getElementById("todo-data-list");
 const searchBar = document.getElementById("todo-input-bar");
 const saveTodoButton = document.getElementById("save-todo");
+let isEditEnabled = false;
 
 let toDoCount = 0;
 let allTodoItems = [];
@@ -44,7 +45,6 @@ function finishedTodo(e) {
   if (allTodoItems[+indexOfData - 1].status === "completed") {
     allTodoItems[+indexOfData - 1].status = "In Progress";
     allTodoItems[+indexOfData - 1].buttonText = "finished";
-
   } else {
     allTodoItems[+indexOfData - 1].status = "completed";
     allTodoItems[+indexOfData - 1].buttonText = "Undo";
@@ -57,14 +57,36 @@ function finishedTodo(e) {
     }
 
     return -1;
-  })
+  });
   allTodoItems.forEach((item, index) => {
     addToDo(item, index + 1);
   });
 }
+function editTodo(e) {
+  isEditEnabled = true;
+  const editableId = +e.target.getAttribute("idbtn");
+  console.log("tata",e.target.textContent);
+  const editableElement = document.querySelector(`div[idbtn="${editableId}"]`);
+  const editInput = document.querySelector(`input[idbtn="${editableId}"]`);
+if(editableElement){
+  editableElement.style.display="none"
+  editInput.hidden=false
+  editInput.value=editableElement.textContent
+  editInput.addEventListener('keypress',(e)=>{
+if(e.keyCode===13){
+  editableElement.textContent= editInput.value
+
+  editableElement.style.display="block"
+  editInput.hidden=true
+  allTodoItems[+editableId-1].content=editInput.value
+  console.log("allTodoItems",allTodoItems)
+}
+  })
+}
+
+}
 
 function addToDo(todo, toDoCount) {
- ;
   //creating div element
   const addRow = document.createElement("div");
   const addItemList = document.createElement("div");
@@ -75,7 +97,9 @@ function addToDo(todo, toDoCount) {
   const toDoButtonGroup = document.createElement("div");
   const deleteButton = document.createElement("button");
   const finishedButton = document.createElement("button");
+  const editButton = document.createElement("button");
   const createhr = document.createElement("hr");
+  const createInput = document.createElement("input");
 
   //adding style
   addItemList.classList.add(
@@ -96,12 +120,18 @@ function addToDo(todo, toDoCount) {
   );
   finishedButton.classList.add("btn", "btn-success");
   deleteButton.classList.add("btn", "btn-danger", "deleteBtn");
+  editButton.classList.add("btn", "btn-warning");
+  createInput.classList.add("todo-detail", "text-mute");
 
   deleteButton.setAttribute("idbtn", toDoCount);
   finishedButton.setAttribute("idbtn", toDoCount);
+  taskTodo.setAttribute("idbtn", toDoCount);
+  editButton.setAttribute("idbtn", toDoCount);
+  createInput.setAttribute("idbtn", toDoCount);
 
   // adding content to that div
   deleteButton.textContent = "Delete";
+  editButton.textContent = "Edit";
 
   if (todo.status === "completed") {
     finishedButton.textContent = "Undo";
@@ -110,19 +140,27 @@ function addToDo(todo, toDoCount) {
   }
   srNo.textContent = toDoCount;
   taskTodo.textContent = todo.content;
+
   status.textContent = todo.status;
   // const getDeleteBtn=document.getElementsByClassName('deleteBtn')
 
   deleteButton.onclick = removeTodo;
   finishedButton.onclick = finishedTodo;
+  editButton.onclick = editTodo;
+
+  //input
+  createInput.hidden=true
 
   //appending child
   addItemList.appendChild(srNo);
+
   addItemList.appendChild(taskTodo);
+  addItemList.appendChild(createInput);
   addItemList.appendChild(status);
 
   toDoButtonGroup.appendChild(deleteButton);
   toDoButtonGroup.appendChild(finishedButton);
+  toDoButtonGroup.appendChild(editButton);
 
   addItemList.appendChild(toDoButtonGroup);
 
