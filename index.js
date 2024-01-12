@@ -1,8 +1,6 @@
-//delete to do
 const addTodoToList = document.getElementById("todo-data-list");
 const searchBar = document.getElementById("todo-input-bar");
 const saveTodoButton = document.getElementById("save-todo");
-
 
 let toDoCount = 0;
 let allTodoItems = [];
@@ -16,24 +14,46 @@ searchBar.addEventListener("keyup", (event) => {
 
 saveTodoButton.addEventListener("click", () => {
   if (searchBar.value) {
-    allTodoItems.push(searchBar.value)
-    toDoCount = allTodoItems.length
+    const toDoObj = {
+      status: "In Progress",
+      content: searchBar.value,
+      buttonText: "finished",
+    };
+    allTodoItems.push(toDoObj);
+    toDoCount = allTodoItems.length;
 
-    addToDo(searchBar.value, toDoCount);
+    addToDo(toDoObj, toDoCount);
     searchBar.value = "";
   }
 });
-function removeTodo(e){
-const targetedElement=e.target
-const indexThatNeedToRemove= targetedElement.getAttribute('idbtn')
- addTodoToList.innerHTML=""
- console.log("all to do",allTodoItems)
- allTodoItems.splice(+indexThatNeedToRemove-1,1)
- console.log("all to do 2",allTodoItems)
+function removeTodo(e) {
+  const targetedElement = e.target;
+  const indexThatNeedToRemove = targetedElement.getAttribute("idbtn");
+  addTodoToList.innerHTML = "";
+  allTodoItems.splice(+indexThatNeedToRemove - 1, 1);
 
- allTodoItems.forEach((item,index)=>{
-  addToDo(item,index+1)
- })
+  allTodoItems.forEach((item, index) => {
+    addToDo(item, index + 1);
+  });
+}
+function finishedTodo(e) {
+  const targetElement = e.target;
+
+  const indexOfData = targetElement.getAttribute("idbtn");
+
+  if(allTodoItems[+indexOfData-1].status==="completed"){
+    allTodoItems[+indexOfData-1].status="In Progress"
+  }else{
+    allTodoItems[+indexOfData-1].status="completed"
+
+  }
+  console.log("allTodoItems2",allTodoItems)
+  addTodoToList.innerHTML = "";
+
+  allTodoItems.forEach((item, index) => {
+    addToDo(item, index + 1);
+  });
+
 }
 
 function addToDo(todo, toDoCount) {
@@ -67,22 +87,29 @@ function addToDo(todo, toDoCount) {
     "gap-2"
   );
   finishedButton.classList.add("btn", "btn-success");
-  deleteButton.classList.add("btn", "btn-danger","deleteBtn");
+  deleteButton.classList.add("btn", "btn-danger", "deleteBtn");
 
-  deleteButton.setAttribute("idbtn",toDoCount)
-
+  deleteButton.setAttribute("idbtn", toDoCount);
+  finishedButton.setAttribute("idbtn", toDoCount);
 
   // adding content to that div
   deleteButton.textContent = "Delete";
-  finishedButton.textContent = "finished";
+
+  if(todo.status==="completed"){
+    finishedButton.textContent = "Undo";
+
+  }else{
+    finishedButton.textContent = "Finish";
+
+  }
   srNo.textContent = toDoCount;
-  taskTodo.textContent = todo;
-  status.textContent = "pending";
-// const getDeleteBtn=document.getElementsByClassName('deleteBtn')
+  taskTodo.textContent = todo.content;
+  status.textContent = todo.status;
+  // const getDeleteBtn=document.getElementsByClassName('deleteBtn')
 
+  deleteButton.onclick = removeTodo;
+  finishedButton.onclick = finishedTodo;
 
-  deleteButton.onclick=removeTodo
-  
   //appending child
   addItemList.appendChild(srNo);
   addItemList.appendChild(taskTodo);
