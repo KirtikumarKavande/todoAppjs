@@ -1,8 +1,12 @@
-const addTodoToList = document.getElementById("todo-data");
+//delete to do
+const addTodoToList = document.getElementById("todo-data-list");
 const searchBar = document.getElementById("todo-input-bar");
 const saveTodoButton = document.getElementById("save-todo");
 
-searchBar.addEventListener("keyup", () => {
+
+let toDoCount = 0;
+let allTodoItems = [];
+searchBar.addEventListener("keyup", (event) => {
   if (!searchBar.value) {
     saveTodoButton.classList.add("disabled");
   } else {
@@ -10,15 +14,29 @@ searchBar.addEventListener("keyup", () => {
   }
 });
 
-saveTodoButton.addEventListener('click',()=>{
-  if(searchBar.value){
-    addToDo(searchBar.value)
-    searchBar.value=""
+saveTodoButton.addEventListener("click", () => {
+  if (searchBar.value) {
+    allTodoItems.push(searchBar.value)
+    toDoCount = allTodoItems.length
+
+    addToDo(searchBar.value, toDoCount);
+    searchBar.value = "";
   }
-})
+});
+function removeTodo(e){
+const targetedElement=e.target
+const indexThatNeedToRemove= targetedElement.getAttribute('idbtn')
+ addTodoToList.innerHTML=""
+ console.log("all to do",allTodoItems)
+ allTodoItems.splice(+indexThatNeedToRemove-1,1)
+ console.log("all to do 2",allTodoItems)
 
+ allTodoItems.forEach((item,index)=>{
+  addToDo(item,index+1)
+ })
+}
 
-function addToDo(todo) {
+function addToDo(todo, toDoCount) {
   //creating div element
   const addRow = document.createElement("div");
   const addItemList = document.createElement("div");
@@ -49,15 +67,22 @@ function addToDo(todo) {
     "gap-2"
   );
   finishedButton.classList.add("btn", "btn-success");
-  deleteButton.classList.add("btn", "btn-danger");
+  deleteButton.classList.add("btn", "btn-danger","deleteBtn");
+
+  deleteButton.setAttribute("idbtn",toDoCount)
+
 
   // adding content to that div
   deleteButton.textContent = "Delete";
   finishedButton.textContent = "finished";
-  srNo.textContent = "1";
+  srNo.textContent = toDoCount;
   taskTodo.textContent = todo;
   status.textContent = "pending";
+// const getDeleteBtn=document.getElementsByClassName('deleteBtn')
 
+
+  deleteButton.onclick=removeTodo
+  
   //appending child
   addItemList.appendChild(srNo);
   addItemList.appendChild(taskTodo);
